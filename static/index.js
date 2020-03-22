@@ -9,7 +9,6 @@
 	}catch( err ){
 		console.log(err)
 	}
-	console.log( response );
 
 	const predictionData = response.data.points;
 	const scatterChart = new Chart(

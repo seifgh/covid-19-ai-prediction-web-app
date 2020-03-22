@@ -15,7 +15,7 @@ from app.views import *
 
 # set URLS
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('home/', HomeView.as_view(), name="home page"),
     path('predictions/', getPredictionPoints),
     # static files urls ( js, css, images )

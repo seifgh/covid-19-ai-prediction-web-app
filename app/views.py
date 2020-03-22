@@ -13,7 +13,7 @@ from .artificial_intelligence.Main import generatePoints
 points = generatePoints()
 
 
-# for etching data using js 
+# for fetching data using js 
 def getPredictionPoints(request):
 	data = {
 			'points': points

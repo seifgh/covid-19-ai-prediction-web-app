@@ -9,15 +9,26 @@ from django.contrib import admin
 
 from corona_predictions import settings
 
-
 from app.views import *
+
 
 
 # set URLS
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home/', HomeView.as_view(), name="home page"),
-    path('predictions/', getPredictionPoints),
+
+    # React routers
+    path('', HomeView.as_view(),),
+    path('predictions', HomeView.as_view(), ),
+    path('predictions/country/<id>', HomeView.as_view(), ),
+    path('about', HomeView.as_view(), ),
+    path('resources', HomeView.as_view(), ),
+
+
+    # Web api urls
+    path('api/countries', CountriesView.as_view()),
+    path('api/country/predictions/<country_id>', CountryPredictionsView.as_view()),
+
     # static files urls ( js, css, images )
     path('static/<path>', serve, {'document_root', settings.STATIC_ROOT}),
 ]

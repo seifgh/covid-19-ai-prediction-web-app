@@ -37,13 +37,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
+    'rest_framework',
 
-    'app',
+    'app'
+
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -52,6 +58,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'corona_predictions.urls'
+
+
 
 TEMPLATES = [
     {
@@ -115,6 +123,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Core headers 
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
@@ -126,4 +136,11 @@ STATICFILES_DIRS =(
     os.path.join(BASE_DIR, 'static'),
 )
 STATIC_ROOT = '/home/glide/Documents/django/cbox/static/'
+
+
+# AI files
+
+SITUATIONS = ['Confirmed.csv', 'Recovered.csv', 'Deaths.csv'];
+
+FILES_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-";
 

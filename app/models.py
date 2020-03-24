@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 
 from django.utils import timezone
 
+from app.artificial_intelligence.Requests import create_files, extract_country
+
 
 # Constants
 
@@ -28,7 +30,7 @@ class Image( Model ):
 
     def clean(self):
         if ( not( self.url or self.image ) ):
-            raise ValidationError("Two fields are emplty, at lease fill one !")
+            raise ValidationError("Two fields are empty, at lease fill one !")
     @property
     def src(self):
     	if ( self.image ):
@@ -43,16 +45,37 @@ class Image( Model ):
         else:
             return self.url
 
+class File( Model ):
+	name = CharField( max_length=100 )
+	file = FileField()
+
+	def clean(self):
+		errors={}
+		# validate prediction_files
+		extension =  self.file.name[-3:]
+		if  ( extension not in PREDICTIONS_FILE_EXTENSIONS ):
+			errors['file'] = 'Invalid type'
+
+		if ( errors ):
+			raise ValidationError(errors)
+
+	def __str__(self):
+		return self.name
+
 class Country(Model):
 
-	name = CharField( max_length=100 )
+	name = CharField( max_length=100, unique=True )
 	continent = CharField( max_length=2, choices=CONTINENTS )
 	image = OneToOneField( Image, on_delete=CASCADE )
 
-	predictions_file = FileField()
-	population = BigIntegerField( default=0 )
-	infections = BigIntegerField( default=0 )
+	# confirmed_time_series = ForeignKey( File, on_delete=CASCADE, related_name="confirmed_series", null=True, blank=True )
+	# death_time_series = ForeignKey( File, on_delete=CASCADE, related_name="deaths_series", null=True, blank=True )
+	# recovered_time_series = ForeignKey( File, on_delete=CASCADE, related_name="recovered_series", null=True, blank=True )
+
+	# population = BigIntegerField( default=0 )
+	cases = BigIntegerField( default=0 )
 	deaths = BigIntegerField( default=0 )
+	recovered = BigIntegerField( default=0 )
 
 	creation_date = DateField( default=timezone.now )
 		
@@ -72,22 +95,25 @@ class Country(Model):
 
 	def clean(self):
 		errors={}
-		# validate prediction_files
-		extension =  self.predictions_file.name[-3:]
-		if  ( extension not in PREDICTIONS_FILE_EXTENSIONS ):
-			errors['predictions_file'] = 'Invalid type'
-		#validate numbers
-		if ( self.population < 0 ):
-			errors['population'] = 'The number should be positive'
 
-		if ( self.deaths < 0 ):
-			errors['deaths'] = 'The number should be positive'
+		# validate if name exists in the file
+		
+		country_data = extract_country( [self.name,] )[self.name]
 
-		if ( self.infections < 0 ):
-			errors['infections'] = 'The number should be positive'
+		if ( country_data['deaths'] == 0 and  country_data['cases'] == 0 and country_data['recovered'] == 0 ):
+			errors['name'] = 'Invalid country name or the country has no cases, deaths, recovered';
+
 
 		if ( errors ):
 			raise ValidationError(errors)
 
+
+	def save( self, *args, **kwargs ):
+	   	country_data = extract_country( [self.name,] )[self.name]
+	   	self.deaths = country_data['deaths']
+	   	self.cases = country_data['cases']
+	   	self.Recovered = country_data['recovered']
+	   	super(Country, self).save(*args, **kwargs)
+
 	def __str__(self):
-		return '{}, {}'.format(self.formated_continent,  self.name )
+		return '{}, {}'.format( self.formated_continent,  self.name )

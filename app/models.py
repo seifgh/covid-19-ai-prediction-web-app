@@ -94,10 +94,12 @@ class Country(Model):
 
 		# validate if name exists in the file
 
-		country_data = extract_country( [self.name,] )[self.name]
-		if ( country_data['deaths'] == 0 and  country_data['cases'] == 0 and country_data['recovered'] == 0 ):
-			errors['name'] = 'Invalid country name or the country has no cases, deaths and recovered';
-
+		try:
+			country_data = extract_country( [self.name,] )[self.name]
+			if ( country_data['deaths'] == 0 and  country_data['cases'] == 0 and country_data['recovered'] == 0 ):
+				errors['name'] = 'The country has no cases, deaths and recovered'
+		except KeyError:
+			errors['name'] = 'Invalid country name'
 
 		if ( errors ):
 			raise ValidationError(errors)

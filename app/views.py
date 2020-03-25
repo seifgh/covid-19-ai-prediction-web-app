@@ -71,9 +71,6 @@ class CountryPredictionsView(APIView):
 
 	def get(self, request, country_id):
 
-		for i in range(1,100000000):
-			pass
-
 		# get the country from db
 		country = get_object_or_404( Country, id=country_id )
 		# get the predictions

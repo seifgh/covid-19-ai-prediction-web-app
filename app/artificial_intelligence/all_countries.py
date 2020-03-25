@@ -30,7 +30,7 @@ def generatePoints(predictions):
     points = []
     x = 0
     for i in predictions:
-        points.append({ "x": x ,"y": round(i) });
+        points.append({ "x": x ,"y": list(map(lambda x: round(float(x)) if(int(x)>=0) else 0, [i, 0]))[0] });
         x += 1
 
     return points
@@ -43,23 +43,26 @@ def country_predictions(country, data):
         
         i = 4
         try: 
-            while( data[data["Country/Region"] == country][data.columns[i:i+1]].apply(sum).values[0]<=0):
+            while( data[data["Country/Region"] == country].groupby(["Country/Region"])[data.columns[i:i+1]].apply(sum).values[0]<=0):
                 i+=1
         except: i = 4
         if( i>4):
-            data = data[data["Country/Region"] == country][data.columns[i-1:]].apply(sum)
+            data = data[data["Country/Region"] == country].groupby(["Country/Region"])[data.columns[i-1:]].apply(sum)
         else:
-            data = data[data["Country/Region"] == country][data.columns[i:]].apply(sum)
-        x = data.index
+            data = data[data["Country/Region"] == country].groupby(['Country/Region'])[data.columns[i:]].apply(sum)
+        x = data.columns
+        
         y = data.values
+        
         x_stmps= pd.Series(x).apply(swap)
         poly = PolynomialFeatures(degree = 4)
         X_Poly = poly.fit_transform(np.array(x_stmps).reshape(len(x_stmps), 1))
-        poly.fit(X_Poly, y)
+        poly.fit(X_Poly, y.reshape(len(x), 1))
         #Fitting data:
         model_linear = LinearRegression()
-        model_linear.fit(X_Poly, y)
+        model_linear.fit(X_Poly, y.reshape(len(x), 1))
         predictions = model_linear.predict(poly.fit_transform(np.array(date_list).reshape(len(date_list), 1)))
+        
         return generatePoints(predictions)
 
 def getCountryPredictions( country, data_paths ):

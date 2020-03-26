@@ -45,8 +45,6 @@ def updatePredictionsData():
 	global countries_predictions
 	countries_predictions =  getAllCountriesPredictions( countries_name )
 
-	return countries_predictions
-
 
 # views
 

@@ -4,12 +4,13 @@ from .models import *
 
 
 from app.views import updatePredictionsData
+from app.artificial_intelligence.all_countries import getCountryNowData
 # actions.
 
 def updateCountriesData(modeladmin, request, queryset):
-	countries_new_data = updatePredictionsData()
+	updatePredictionsData()
 	for country in queryset.all():
-		country_data = countries_new_data[country.name]
+		country_data = getCountryNowData( country.name )
 		country.deaths = country_data['deaths']
 		country.cases = country_data['cases']
 		# country.Recovered = country_data['recovered']

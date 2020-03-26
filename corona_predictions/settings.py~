@@ -20,12 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'n55uapcpco6zvy^ao0%d2g2&xpzyb9dmxw)*h#dbp$aqj3g(7u'
+SECRET_KEY =  "@qbh4vk+*=d_ytm*)pixwo6e4hwlr)_dv(#--88kkunt^=^l" # os.getenv("DJANGO_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['cov19aipredictions.pythonanywhere.com']
+ALLOWED_HOSTS = ['cov19aipredictions.pythonanywhere.com', 'localhost']
 
 
 # Application definition
@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'corsheaders',
+    # 'corsheaders',
     'rest_framework',
 
     'app'
@@ -78,6 +78,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'corona_predictions.wsgi.application'
+
+# Cors headers
+# CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Database
@@ -123,8 +126,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Core headers
-CORS_ORIGIN_ALLOW_ALL = True
+
+# rate limit
+RATELIMIT_ENABLE = True
+RATELIMIT_USE_CACHE = 'default'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
@@ -142,8 +148,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # AI files
 
 FILES_PATH = os.path.join(BASE_DIR, 'app/artificial_intelligence')
-
-SITUATIONS = ['Confirmed.csv', 'Recovered.csv', 'Deaths.csv'];
-
-FILES_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-";
-
+SITUATIONS = ['confirmed_global.csv', 'deaths_global.csv']
+FILES_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_"

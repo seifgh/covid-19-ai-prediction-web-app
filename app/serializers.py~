@@ -2,7 +2,7 @@ from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField, 
 
 
 # Db tables
-from app.models import Image, Country
+from app.models import *
 
 
 class ImageSerializer(ModelSerializer):
@@ -27,6 +27,6 @@ class CountrySerializer(ModelSerializer):
 			'continent',
 			'image',
 			'cases',
-			# 'recovered',
+			'recovered',
 			'deaths',
 		)

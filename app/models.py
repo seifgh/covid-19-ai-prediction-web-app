@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 
 from app.artificial_intelligence.Requests import  extract_country
-
+from app.artificial_intelligence.all_countries import getCountryNowData
 
 
 # Constants
@@ -93,11 +93,10 @@ class Country(Model):
 		errors={}
 
 		# validate if name exists in the file
-
 		try:
 			country_data = extract_country( [self.name,] )[self.name]
-			if ( country_data['deaths'] == 0 and  country_data['cases'] == 0 and country_data['recovered'] == 0 ):
-				errors['name'] = 'The country has no cases, deaths and recovered'
+			if ( country_data['deaths'] == 0 and  country_data['cases'] == 0  ):
+				errors['name'] = 'The country has no cases and deaths'
 		except KeyError:
 			errors['name'] = 'Invalid country name'
 
@@ -106,10 +105,12 @@ class Country(Model):
 
 
 	def save( self, *args, **kwargs ):
-	   	country_data = extract_country( [self.name,] )[self.name]
+		# auto insert data
+
+	   	country_data = getCountryNowData( self.name )
 	   	self.deaths = country_data['deaths']
 	   	self.cases = country_data['cases']
-	   	self.Recovered = country_data['recovered']
+	   	
 	   	super(Country, self).save(*args, **kwargs)
 
 	def __str__(self):

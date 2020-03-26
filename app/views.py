@@ -8,6 +8,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+# for handling max request number by user
+from ratelimit.decorators import ratelimit
+
+
 # Db models
 from app.models import *
 
@@ -16,7 +20,7 @@ from app.serializers import *
 
 # Ai imports
 from app.artificial_intelligence.all_countries import getAllCountriesPredictions
-from app.artificial_intelligence.Requests import create_files, extract_country
+from app.artificial_intelligence.Requests import create_files
 
 
 
@@ -41,11 +45,14 @@ def updatePredictionsData():
 	global countries_predictions
 	countries_predictions =  getAllCountriesPredictions( countries_name )
 
+	return countries_predictions
+
 
 # views
 
-class HomeView(View):
 
+class HomeView(View):
+	@ratelimit(key='ip', rate='50/h', method='GET', block=True)
 	def get(self, request, id=''):
 
 		return render(request, template_name='index.html' )
@@ -55,7 +62,7 @@ class HomeView(View):
 # web API views
 
 class CountriesView(APIView):
-
+	@ratelimit(key='ip', rate='50/h', method='GET', block=True)
 	def get(self, request):
 
 		countries = Country.objects.all()
@@ -66,9 +73,8 @@ class CountriesView(APIView):
 
 		return Response( data=response, status=status.HTTP_200_OK )
 
-
 class CountryPredictionsView(APIView):
-
+	@ratelimit(key='ip', rate='50/h', method='GET', block=True)
 	def get(self, request, country_id):
 
 		# get the country from db

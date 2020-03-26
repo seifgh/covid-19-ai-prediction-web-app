@@ -2,17 +2,17 @@ from django.contrib import admin
 from .models import *
 
 
-from app.artificial_intelligence.Requests import extract_country
+
 from app.views import updatePredictionsData
 # actions.
 
 def updateCountriesData(modeladmin, request, queryset):
-	updatePredictionsData()
+	countries_new_data = updatePredictionsData()
 	for country in queryset.all():
-		country_data = extract_country( [country.name,] )[country.name]
+		country_data = countries_new_data[country.name]
 		country.deaths = country_data['deaths']
 		country.cases = country_data['cases']
-		country.Recovered = country_data['recovered']
+		# country.Recovered = country_data['recovered']
 		country.save()
 
 updateCountriesData.short_description = "Update countries data and update predictions file"

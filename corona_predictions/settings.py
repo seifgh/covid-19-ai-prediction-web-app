@@ -20,10 +20,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_KEY")
+SECRET_KEY = "@qbh4vk+*=d_ytm*)pixwo6e4hwlr)_dv(#--88kkunt^=^l"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['cov19aipredictions.pythonanywhere.com', 'localhost']
 
@@ -130,6 +130,7 @@ USE_TZ = True
 # rate limit
 RATELIMIT_ENABLE = True
 RATELIMIT_USE_CACHE = 'default'
+RATELIMIT_FAIL_OPEN = True
 
 
 # Static files (CSS, JavaScript, Images)

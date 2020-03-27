@@ -4,6 +4,9 @@ from django.views.generic import View
 from django.shortcuts import get_object_or_404, get_list_or_404
 
 
+from django.utils.decorators import method_decorator
+
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -49,8 +52,8 @@ def updatePredictionsData():
 # views
 
 
+@method_decorator(ratelimit(key='ip', rate='1/m', method='GET'), name="get")
 class HomeView(View):
-	@ratelimit(key='ip', rate='50/h', method='GET', block=True)
 	def get(self, request, id=''):
 
 		return render(request, template_name='index.html' )
@@ -59,8 +62,8 @@ class HomeView(View):
 
 # web API views
 
+@method_decorator(ratelimit(key='ip', rate='1/m', method='GET'), name="get")
 class CountriesView(APIView):
-	@ratelimit(key='ip', rate='50/h', method='GET', block=True)
 	def get(self, request):
 
 		countries = Country.objects.all()
@@ -71,8 +74,9 @@ class CountriesView(APIView):
 
 		return Response( data=response, status=status.HTTP_200_OK )
 
+
+@method_decorator(ratelimit(key='ip', rate='1/m', method='GET'), name="get")
 class CountryPredictionsView(APIView):
-	@ratelimit(key='ip', rate='50/h', method='GET', block=True)
 	def get(self, request, country_id):
 
 		# get the country from db

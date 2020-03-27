@@ -95,7 +95,7 @@ def getAllCountriesPredictions( countries ):
 def getCountryNowData(country):
     country_data = getAllCountriesPredictions([country,])[country]
 
-    formated_date_now = datetime.datetime.strftime(timezone.now() + datetime.timedelta( days=1 ) , "%m/%d")
+    formated_date_now = datetime.datetime.strftime(timezone.now(), "%m/%d")
     for i in range( len(country_data["cases"]) ):
         if ( country_data["deaths"][i]["date"] ==  formated_date_now ):
             return { 'deaths': country_data["deaths"][i]["y"], 'cases':  country_data["cases"][i]["y"]}

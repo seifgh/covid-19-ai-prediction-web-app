@@ -22,6 +22,8 @@ urlpatterns = [
     path('predictions', HomeView.as_view(), ),
     path('predictions/country/<id>', HomeView.as_view(), ),
     path('about', HomeView.as_view(), ),
+    path('ieee', HomeView.as_view(), ),
+
     path('resources', HomeView.as_view(), ),
 
 

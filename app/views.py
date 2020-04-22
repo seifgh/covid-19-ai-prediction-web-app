@@ -52,7 +52,7 @@ def updatePredictionsData():
 # views
 
 
-@method_decorator(ratelimit(key='ip', rate='1/m', method='GET'), name="get")
+# @method_decorator(ratelimit(key='ip', rate='1/m', method='GET'), name="get")
 class HomeView(View):
 	def get(self, request, id=''):
 
@@ -62,12 +62,10 @@ class HomeView(View):
 
 # web API views
 
-@method_decorator(ratelimit(key='ip', rate='1/m', method='GET'), name="get")
+# @method_decorator(ratelimit(key='ip', rate='1/m', method='GET'), name="get")
 class CountriesView(APIView):
 	def get(self, request):
-
 		countries = Country.objects.all()
-
 		response = {
 			'countries': CountrySerializer( countries, many=True ).data
 		}
@@ -75,7 +73,7 @@ class CountriesView(APIView):
 		return Response( data=response, status=status.HTTP_200_OK )
 
 
-@method_decorator(ratelimit(key='ip', rate='1/m', method='GET'), name="get")
+# @method_decorator(ratelimit(key='ip', rate='1/m', method='GET'), name="get")
 class CountryPredictionsView(APIView):
 	def get(self, request, country_id):
 

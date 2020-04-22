@@ -14,7 +14,8 @@ from django.conf import settings
 # the data paths for AI
 DATA_PATHS = {
     'cases':   os.path.join(settings.FILES_PATH,  SITUATIONS[0]),
-    'deaths':   os.path.join(settings.FILES_PATH,  SITUATIONS[1])
+    'deaths':   os.path.join(settings.FILES_PATH,  SITUATIONS[1]),
+    'recovered': os.path.join(settings.FILES_PATH, SITUATIONS[2])
 }
 
 
@@ -52,7 +53,10 @@ def country_predictions(country, data):
             while( data[data["Country/Region"] == country].groupby(["Country/Region"])[data.columns[i:i+1]].apply(sum).values[0]<=0):
                 i+=1
         except: i = 4
-        if( i>4):
+        if(country == "US"):
+            data = data[data["Country/Region"] == country].groupby(["Country/Region"])[data.columns[45:]].apply(sum)
+
+        elif( i>4):
             data = data[data["Country/Region"] == country].groupby(["Country/Region"])[data.columns[i-1:]].apply(sum)
         else:
             data = data[data["Country/Region"] == country].groupby(['Country/Region'])[data.columns[i:]].apply(sum)
@@ -70,18 +74,25 @@ def country_predictions(country, data):
         predictions = model_linear.predict(poly.fit_transform(np.array(date_list).reshape(len(date_list), 1)))
 
         return generatePoints(predictions)
+# def recovery_rate(country, data):
 
+#     return round((data[-1]/data[-2] * 100)-100, 2)
 def getCountryPredictions( country, data_paths ):
 
     #Grabbing the data:
     cases =  pd.read_csv( data_paths["cases"] )
     deaths =  pd.read_csv( data_paths["deaths"] )
+    recovered = pd.read_csv(data_paths['recovered'])
     # countries = [i[0] for i in list(cases.groupby(["Country/Region"])["Country/Region"])]
 
     return {
-        'cases': country_predictions(country, cases),
-        'deaths': country_predictions(country, deaths),
-    }
+        'cases': {'data':country_predictions(country, cases),"rate": recovery_rate(country, cases)},
+        'deaths': {'data': country_predictions(country, deaths),"rate":recovery_rate(country,deaths)},
+        'recovered': {'data':round(float(recovered[recovered["Country/Region"] == country].groupby("Country/Region")[recovered.columns[-1]].apply(sum).values)  ), "rate":recovery_rate(country, recovered)}}
+def recovery_rate(country, data):
+    sample = data = data[data["Country/Region"] == country].groupby(['Country/Region'])[data.columns[4:]].apply(sum)
+    
+    return round(float((sample[data.columns[-1]].values/sample[data.columns[-2]].values * 100)-100), 2)
 
 # Create a dict tha contains all predictions of availabel countries
 def getAllCountriesPredictions( countries ):
@@ -92,10 +103,24 @@ def getAllCountriesPredictions( countries ):
 
     return countries_predictions
 
+def verify_situation(country, country_data):
+    i = 0
+    while(country_data["cases"]["data"][i]["date"] != "05/01"):
+        i +=1
+    value = country_data["cases"]["data"][i]
+    if(value["y"] > 10000):
+        return "dz"
+    elif (value["y"] >1000):
+        return "wz"
+    else:
+        return "sz"
 def getCountryNowData(country):
     country_data = getAllCountriesPredictions([country,])[country]
 
     formated_date_now = datetime.datetime.strftime(timezone.now() + datetime.timedelta( days=1 ) , "%m/%d")
-    for i in range( len(country_data["cases"]) ):
-        if ( country_data["deaths"][i]["date"] ==  formated_date_now ):
-            return { 'deaths': country_data["deaths"][i]["y"], 'cases':  country_data["cases"][i]["y"]}
+    for i in range( len(country_data["cases"]['data']) ):
+        if ( country_data["deaths"]['data'][i]["date"] ==  formated_date_now ):
+            return { 'deaths': country_data["deaths"]['data'][i]["y"], 'cases':  country_data["cases"]['data'][i]["y"], 'status': verify_situation(country, country_data),'recovered': country_data['recovered']['data']}
+
+
+

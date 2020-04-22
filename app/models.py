@@ -18,6 +18,12 @@ CONTINENTS = (
 	('st','South America'),
 )
 
+COUNTRIES_STATUS = (
+	('dz','Danger zone'),
+	('wz','Warning danger'),
+	('sz','Safe zone')
+)
+
 PREDICTIONS_FILE_EXTENSIONS =  ('csv',)
 
 
@@ -46,23 +52,6 @@ class Image( Model ):
         else:
             return self.url
 
-class File( Model ):
-	name = CharField( max_length=100 )
-	file = FileField()
-
-	def clean(self):
-		errors={}
-		# validate prediction_files
-		extension =  self.file.name[-3:]
-		if  ( extension not in PREDICTIONS_FILE_EXTENSIONS ):
-			errors['file'] = 'Invalid type'
-
-		if ( errors ):
-			raise ValidationError(errors)
-
-	def __str__(self):
-		return self.name
-
 class Country(Model):
 
 	name = CharField( max_length=100, unique=True )
@@ -73,6 +62,9 @@ class Country(Model):
 	deaths = BigIntegerField( default=0 )
 	recovered = BigIntegerField( default=0 )
 
+	status = CharField( max_length=2, choices=COUNTRIES_STATUS )
+
+
 	creation_date = DateField( default=timezone.now )
 
 	@property
@@ -80,6 +72,15 @@ class Country(Model):
 		# return the full name of continent
 		code = self.continent
 		for i  in CONTINENTS:
+			if ( i[0] == code ):
+				return i[1]
+		return code
+
+	@property
+	def formated_status(self):
+		# return the full name of status
+		code = self.status
+		for i  in COUNTRIES_STATUS:
 			if ( i[0] == code ):
 				return i[1]
 		return code
@@ -110,7 +111,10 @@ class Country(Model):
 	   	country_data = getCountryNowData( self.name )
 	   	self.deaths = country_data['deaths']
 	   	self.cases = country_data['cases']
-	   	
+	   	self.recovered = country_data['recovered']
+
+	   	self.status = country_data['status']
+
 	   	super(Country, self).save(*args, **kwargs)
 
 	def __str__(self):

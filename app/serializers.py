@@ -17,6 +17,7 @@ class ImageSerializer(ModelSerializer):
 class CountrySerializer(ModelSerializer):
 
 	continent = ReadOnlyField( source="formated_continent" )
+	# status = ReadOnlyField( source="formated_status" )
 	image = ImageSerializer()
 
 	class Meta:
@@ -27,6 +28,7 @@ class CountrySerializer(ModelSerializer):
 			'continent',
 			'image',
 			'cases',
-			# 'recovered',
+			'status',
 			'deaths',
+			'recovered'
 		)

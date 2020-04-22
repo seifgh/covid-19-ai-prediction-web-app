@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'corsheaders',
+    'corsheaders',
     'rest_framework',
 
     'app'
@@ -48,7 +48,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
 
-   # 'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -80,7 +80,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'corona_predictions.wsgi.application'
 
 # Cors headers
-# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Database
@@ -128,7 +128,7 @@ USE_TZ = True
 
 
 # rate limit
-RATELIMIT_ENABLE = True
+RATELIMIT_ENABLE = False
 RATELIMIT_USE_CACHE = 'default'
 RATELIMIT_FAIL_OPEN = True
 
@@ -149,5 +149,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # AI files
 
 FILES_PATH = os.path.join(BASE_DIR, 'app/artificial_intelligence')
-SITUATIONS = ['confirmed_global.csv', 'deaths_global.csv']
+SITUATIONS = ['confirmed_global.csv', 'deaths_global.csv', 'recovered_global.csv']
 FILES_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_"

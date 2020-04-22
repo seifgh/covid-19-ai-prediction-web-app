@@ -5,8 +5,9 @@ This is a team work project of me and [Ramsis Hammadi](https://github.com/Rams90
 ### Web site
 [Open website](https://cov19aipredictions.pythonanywhere.com/)
 <img   src="https://github.com/seifgh/covid-19-predictions-web-app-front-end/blob/master/Screenshot%20from%202020-04-22%2022-08-56.png" />
+### Front end
 
----
+- The front end part is in another repository [covid-19-predictions-web-app-front-end](https://github.com/seifgh/covid-19-predictions-web-app-front-end) open the link for more informations
 
 ---
 ### Prerequisites

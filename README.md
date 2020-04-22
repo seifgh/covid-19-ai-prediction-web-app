@@ -1,4 +1,4 @@
-# covid-19-predictions-web-app-front-end
+# covid-19-predictions-web-app
 
 This is a team work project of me and [Ramsis Hammadi](https://github.com/Rams901) dedicated to the current situations and to make people aware of how severe it might get. We've used machine learning skills to predict the confirmed cases/deaths in infected countries with covid-19.
 
